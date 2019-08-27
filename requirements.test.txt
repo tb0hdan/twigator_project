@@ -3,6 +3,6 @@ codeclimate-test-reporter
 piprot
 pylint
 pytest
-pytest-cov
+pytest-cov==2.5.1
 pytest-sugar
 radon
