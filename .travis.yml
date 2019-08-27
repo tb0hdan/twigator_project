@@ -1,0 +1,11 @@
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y build-essential
+language: python
+python:
+  - "3.6"
+# command to install dependencies
+install:
+  - make tests
+# command to run tests
+script: make coverage_ci
