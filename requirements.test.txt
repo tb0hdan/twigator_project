@@ -1,3 +1,5 @@
+codeclimate-test-reporter
+piprot
 pylint
 pytest
 pytest-cov
