@@ -2,7 +2,7 @@
 
 all: tests start
 
-tests: test-deps err-check-twigator test coverage
+tests: test-deps err-check-twigator-debug test coverage
 
 test-deps:
 	@pip3 install -r requirements.test.txt
@@ -32,6 +32,9 @@ err-check-twigator:
 	@printf "Checking twigator... "
 	@if [ "$(shell pylint twigator/|egrep '(syntax-error|import-error)')" != "" ]; then exit 1; fi
 	@./bin/colorprint.sh green "\t\t\t[✓]\n"
+
+err-check-twigator-debug:
+	@pylint twigator/
 
 metrics: test-deps cc mi
 
