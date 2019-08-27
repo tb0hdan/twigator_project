@@ -2,7 +2,7 @@
 
 all: tests start
 
-tests: deps test-deps piprot err-check-twigator test coverage
+tests: deps test-deps err-check-twigator test coverage
 
 deps:
 	@pip3 install -r requirements.txt
