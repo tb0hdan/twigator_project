@@ -12,6 +12,7 @@ twigator project - twitter aggregator project
 - [INSTALLATION](#installation)
 - [CONFIGURATION](#configuration)
 - [USAGE](#usage)
+- [ENDPOINTS](#endpoints)
 
 ## Description
 Twigator project is a twitter message aggregator that searches messages periodically (using Twitter Search API)
@@ -36,3 +37,21 @@ Configuration is done via environment variables on host system. The list is as f
 To get familiar with the project, start by typing: `make`
 After few moments HTTP API will be available at http://localhost:8000
 
+To stop containers, type: `make stop`
+
+### Endpoints
+To get all values for URLs with queries provide "" or '' as query, e.g.
+
+`http://localhost:8000/tweets/''`
+
+Queries:
+
+- http://localhost:8000/author/author_id
+- http://localhost:8000/tweet/tweet_id
+- http://localhost:8000/tweets/query
+
+Aggregations:
+
+- http://localhost:8000/aggregation/top_tags/query
+- http://localhost:8000/aggregation/top_twitters/query
+- http://localhost:8000/aggregation/tweet_count/query

@@ -44,6 +44,9 @@ err-check-twigator-debug:
 
 metrics: test-deps cc mi
 
+schema:
+	@python3 twigator/schemabuilder.py
+
 cc:
 	@echo "Checking cyclomatic complexity..."
 	@radon cc twigator/

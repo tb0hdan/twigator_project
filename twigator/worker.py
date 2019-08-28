@@ -4,18 +4,17 @@
 import datetime
 import os
 import sys
-import threading
 import time
 
 from twython import Twython
 
-import sys
 sys.path.insert(1, '..')
 sys.path.insert(2, '.')
 
 from twigator.db.entities import Tweet
 from twigator.db.connection import MongoConnection
 from twigator.log import logger
+from twigator.envconfig import  EnvConfig
 
 
 def get_statuses(query, tweet_count, consumer_key, consumer_secret):
@@ -47,16 +46,29 @@ def add_to_db(statuses, query_phrases):
         tweet.save()
     return
 
-if __name__ == '__main__':
-    environment = os.environ
-    tweet_count: int = int(environment.get('TWEET_LAST_TWEETS', 1))
-    tweet_schedule: int = int(environment.get('TWEET_EVERY_MINUTES', 1))
-    tweet_query: str = environment.get('TWEET_QUERY', '')
+
+def runner(tweet_count=None, tweet_schedule=None, tweet_query=None,
+           consumer_key=None, consumer_secret=None):
+    """
+    Run aggregation
+    :param tweet_count:
+    :param tweet_schedule:
+    :param tweet_query:
+    :param consumer_key:
+    :param consumer_secret:
+    :return:
+    """
+    env_config = EnvConfig()
+    tweet_count: int = tweet_count if tweet_count else int(env_config.TWEET_LAST_TWEETS)
+    tweet_schedule: int = tweet_schedule if tweet_schedule else int(env_config.TWEET_EVERY_MINUTES)
+    tweet_query: str = tweet_query if tweet_query else env_config.TWEET_QUERY
+    consumer_key: str = consumer_key if consumer_key else env_config.TWITTER_CONSUMER_KEY
+    consumer_secret: str = consumer_secret if consumer_secret else env_config.TWITTER_CONSUMER_SECRET
+
     if not tweet_query:
         logger.error('Cannot run with empty query...')
         sys.exit(127)
-    consumer_key: str = environment.get('TWITTER_CONSUMER_KEY')
-    consumer_secret: str = environment.get('TWITTER_CONSUMER_SECRET')
+
     if not consumer_key or not consumer_secret:
         logger.error('Cannot run without auth...')
         sys.exit(129)
@@ -65,10 +77,13 @@ if __name__ == '__main__':
         # Run!
         statuses = get_statuses(tweet_query, tweet_count, consumer_key, consumer_secret)
         logger.info('Status length: %d', len(statuses))
-        with MongoConnection('twitter', os.environ.get('MONGO_HOST'), int(os.environ.get('MONGO_PORT'))):
+        with MongoConnection():
             add_to_db(statuses, tweet_query)
         logger.info('Sleeping for %d minute(s) until next fetch...', tweet_schedule)
         try:
             time.sleep(tweet_schedule * 60)
         except KeyboardInterrupt:
             break
+
+if __name__ == '__main__':
+    runner()

@@ -21,3 +21,10 @@ class Tweet(Document):
     hashtags = ListField(StringField())  # can be empty
     author_id = LongField(required=True)
     query_phrases = ListField(StringField(), required=True)
+
+    meta = {'indexes': [
+        {'fields': ['$phrase', "$query_phrases"],
+         'default_language': 'english',
+         'weights': {'phrase': 10, 'query_phrases': 2}
+        }
+    ]}
