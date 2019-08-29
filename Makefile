@@ -47,6 +47,9 @@ metrics: test-deps cc mi
 schema:
 	@python3 twigator/schemabuilder.py
 
+schema_fixture:
+	@python3 twigator/schemabuilder.py > tests/fixtures/schema.yml
+
 cc:
 	@echo "Checking cyclomatic complexity..."
 	@radon cc twigator/

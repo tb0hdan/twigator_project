@@ -48,7 +48,7 @@ Queries:
 
 - http://localhost:8000/author/author_id
 - http://localhost:8000/tweet/tweet_id
-- http://localhost:8000/tweets/query
+- http://localhost:8000/tweets/query?
 
 Aggregations:
 

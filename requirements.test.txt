@@ -1,5 +1,6 @@
 coverage>=4.0,<4.4
 codeclimate-test-reporter
+mongomock
 piprot
 pylint
 pytest

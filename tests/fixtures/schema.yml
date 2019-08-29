@@ -1,0 +1,52 @@
+info:
+  description: Aggregate tweets and provide RESTful access to DB
+  title: Tweet query API
+  version: '1.0'
+openapi: 3.0.0
+paths:
+  /:
+    get:
+      responses:
+        '200':
+          description: A hello world response
+          examples:
+            result:
+              hello: world
+            status: ok
+  /aggregation/{aggregation_name:str}/{query:str}:
+    get:
+      responses:
+        '200':
+          description: A hello world response
+          examples:
+            result:
+              hello: world
+            status: ok
+  /author/{author_id:int}:
+    get:
+      responses:
+        '200':
+          description: A hello world response
+          examples:
+            result:
+              hello: world
+            status: ok
+  /tweet/{tweet_id:int}:
+    get:
+      responses:
+        '200':
+          description: A hello world response
+          examples:
+            result:
+              hello: world
+            status: ok
+  /tweets/{phrase:str}:
+    get:
+      responses:
+        '200':
+          description: A hello world response
+          examples:
+            result:
+              hello: world
+            status: ok
+
