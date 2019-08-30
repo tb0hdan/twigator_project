@@ -2,8 +2,8 @@ FROM python:3.6-alpine
 WORKDIR /
 COPY requirements.txt ./
 RUN apk update
-RUN apk add bash busybox-extras
-RUN apk add gcc libc-dev make
+RUN apk add --no-cache bash busybox-extras
+RUN apk add --no-cache gcc libc-dev make
 RUN pip install -U pip
 RUN pip install --no-cache-dir -r requirements.txt
 ADD ./bin /bin
