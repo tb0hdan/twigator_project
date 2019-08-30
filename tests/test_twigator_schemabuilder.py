@@ -5,7 +5,7 @@ from twigator.schemabuilder import get_schema
 
 from . import mytestrunner
 
-class DummyTestCase(unittest.TestCase):
+class SchemaBuilderTestCase(unittest.TestCase):
     '''
     '''
     def setUp(self):
