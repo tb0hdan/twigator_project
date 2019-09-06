@@ -5,10 +5,10 @@ all: tests start
 tests: deps test-deps piprot err-check-twigator test coverage
 
 deps:
-	@pip3 install -r requirements.txt
+	@pip3 install -r requirements.txt >/dev/null
 
 test-deps:
-	@pip3 install -r requirements.test.txt
+	@pip3 install -r requirements.test.txt >/dev/null
 
 piprot:
 	@piprot; exit 0
@@ -43,6 +43,9 @@ err-check-twigator-debug:
 	@pylint twigator/
 
 metrics: test-deps cc mi
+
+mypy: test-deps
+	@mypy -m twigator
 
 schema:
 	@python3 twigator/schemabuilder.py

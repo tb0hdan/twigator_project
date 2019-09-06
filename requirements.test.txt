@@ -1,9 +1,11 @@
 coverage>=4.0,<4.4
 codeclimate-test-reporter
 mongomock
+mypy
 piprot
 pylint
 pytest
 pytest-cov==2.5.1
 pytest-sugar
 radon
+typeshed
