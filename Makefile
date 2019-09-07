@@ -1,5 +1,16 @@
 .PHONY: tests
 
+SWAGGER_VERSION = "3.23.8"
+
+ifeq ($(shell uname),Darwin)
+    SED = sed -E
+    SEDINPLACE = $(SED) -i '' -e
+else
+    SED = sed -r
+    SEDINPLACE = $(SED) -i -e
+endif
+
+
 all: tests start
 
 tests: deps test-deps piprot err-check-twigator mypy test coverage
@@ -22,7 +33,7 @@ coverage:
 coverage_ci:	coverage
 	@codeclimate-test-reporter
 
-build:
+build: swagger
 	@docker-compose build --build-arg TWITTER_CONSUMER_KEY=$${TWITTER_CONSUMER_KEY} --build-arg TWITTER_CONSUMER_SECRET=$${TWITTER_CONSUMER_SECRET}
 
 start: build
@@ -66,3 +77,14 @@ mi:
 
 purge:
 	@docker-compose rm -s -f
+
+swagger:
+	@if [ -f ./twigator/static/swagger/swagger-ui.js ]; then echo "Already downloaded..."; exit 0; fi
+	@wget https://github.com/swagger-api/swagger-ui/archive/v$(SWAGGER_VERSION).tar.gz -O /tmp/v$(SWAGGER_VERSION).tar.gz
+	@tar -xzpf /tmp/v$(SWAGGER_VERSION).tar.gz  -C /tmp
+	@cp /tmp/swagger-ui-$(SWAGGER_VERSION)/dist/* ./twigator/static/swagger/
+	@$(SEDINPLACE) '/url/s/https\:\/\/petstore.swagger.io\/v2\/swagger.json/\/schema/g' ./twigator/static/swagger/index.html
+
+swagger-clean:
+	@rm ./twigator/static/swagger/*
+	@rm -rf /tmp/v$(SWAGGER_VERSION).tar.gz /tmp/swagger-ui-$(SWAGGER_VERSION)

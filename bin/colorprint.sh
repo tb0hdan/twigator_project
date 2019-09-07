@@ -22,4 +22,8 @@ case ${color} in
 esac
 
 shift
-printf ${template}$*${TEMPLATE_OFF}
+if [ "$TERM" == "xterm-256color" ]; then
+    printf ${template}$*${TEMPLATE_OFF}
+else
+    printf $*
+fi

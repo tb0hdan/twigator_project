@@ -5,12 +5,14 @@ Twigator web server module
 """
 
 import os
+
 from typing import Any, Collection
 
 from apispec import APISpec  # type: ignore
 
 from starlette.applications import Starlette
-from starlette.responses import Response, UJSONResponse
+from starlette.responses import Response, RedirectResponse, UJSONResponse
+from starlette.staticfiles import StaticFiles
 from starlette_apispec import APISpecSchemaGenerator  # type: ignore
 
 import sys
@@ -90,6 +92,15 @@ class ResponseBuilder:
         :return: None
         """
         self.__response['result'] = result
+
+APP.mount('/static', StaticFiles(directory="static"))
+
+
+@APP.route("/swagger/index.html", methods=["GET"], include_in_schema=False)
+@APP.route("/swagger/", methods=["GET"], include_in_schema=False)
+@APP.route("/swagger", methods=["GET"], include_in_schema=False)
+async def swagger_page(_):
+    return RedirectResponse(url='/static/swagger/index.html')
 
 
 @APP.route("/", methods=["GET"])

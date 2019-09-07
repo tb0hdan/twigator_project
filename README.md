@@ -13,6 +13,7 @@ twigator project - twitter aggregator project
 - [CONFIGURATION](#configuration)
 - [USAGE](#usage)
 - [ENDPOINTS](#endpoints)
+- [DEVELOPMENT](#development)
 
 ## Description
 Twigator project is a twitter message aggregator that searches messages periodically (using Twitter Search API)
@@ -48,10 +49,32 @@ Queries:
 
 - http://localhost:8000/author/author_id
 - http://localhost:8000/tweet/tweet_id
-- http://localhost:8000/tweets/query?
+- http://localhost:8000/tweets/query
 
 Aggregations:
 
 - http://localhost:8000/aggregation/top_tags/query
 - http://localhost:8000/aggregation/top_twitters/query
 - http://localhost:8000/aggregation/tweet_count/query
+
+## Development
+
+### Running tests
+
+Following test group are ran every time `tests`
+target is requested:
+
+- PyLint
+- MyPy
+- Unit tests
+- Unit tests + Coverage
+
+Command to run all test groups:
+
+`make tests`
+
+### API documentation
+
+API documentation is available after running `make` at:
+
+- http://localhost:8000/swagger
