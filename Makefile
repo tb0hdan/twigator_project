@@ -24,10 +24,13 @@ test-deps:
 piprot:
 	@piprot; exit 0
 
-test:
+test-dirs:
+	@mkdir -p ./static
+
+test: test-dirs
 	@py.test -c ./tests/etc/pytest.ini -v tests/
 
-coverage:
+coverage: test-dirs
 	@py.test -c ./tests/etc/pytest.ini --cov=./twigator --cov-config=./tests/etc/coveragerc tests/
 
 coverage_ci:	coverage
