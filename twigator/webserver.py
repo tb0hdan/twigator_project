@@ -5,12 +5,13 @@ Twigator web server module
 """
 
 import os
+from typing import Any, Collection
 
-from apispec import APISpec
+from apispec import APISpec  # type: ignore
 
 from starlette.applications import Starlette
-from starlette.responses import UJSONResponse
-from starlette_apispec import APISpecSchemaGenerator
+from starlette.responses import Response, UJSONResponse
+from starlette_apispec import APISpecSchemaGenerator  # type: ignore
 
 import sys
 sys.path.insert(1, '..')
@@ -50,7 +51,7 @@ class ResponseBuilder:
         return self.__response
 
     @property
-    def json(self):
+    def json(self) -> UJSONResponse:
         """
         Build response from dictionary using fast converter
 
@@ -81,7 +82,7 @@ class ResponseBuilder:
         """
         self.set_status('error')
 
-    def set_result(self, result: dict) -> None:
+    def set_result(self, result: Collection[Any]) -> None:
         """
         Provide a way to set private dictionary
 
@@ -92,7 +93,7 @@ class ResponseBuilder:
 
 
 @APP.route("/", methods=["GET"])
-async def homepage(_):
+async def homepage(_) -> UJSONResponse:
     """
     responses:
       200:
@@ -107,7 +108,7 @@ async def homepage(_):
 
 
 @APP.route("/tweets/{phrase:str}", methods=["GET"])
-async def tweets(request):
+async def tweets(request) -> UJSONResponse:
     """
     responses:
       200:
@@ -130,7 +131,7 @@ async def tweets(request):
 
 
 @APP.route("/tweet/{tweet_id:int}", methods=["GET"])
-async def tweet_by_id(request):
+async def tweet_by_id(request) -> UJSONResponse:
     """
     responses:
       200:
@@ -151,7 +152,7 @@ async def tweet_by_id(request):
 
 
 @APP.route("/author/{author_id:int}", methods=["GET"])
-async def author_by_id(request):
+async def author_by_id(request) -> UJSONResponse:
     """
     responses:
       200:
@@ -172,7 +173,7 @@ async def author_by_id(request):
 
 
 @APP.route('/aggregation/{aggregation_name:str}/{query:str}', methods=["GET"])
-async def aggregation(request):
+async def aggregation(request) -> UJSONResponse:
     """
     responses:
       200:
@@ -191,23 +192,23 @@ async def aggregation(request):
     if aggregation_name == 'top_tags':
         with MongoConnection('twitter', os.environ.get('MONGO_HOST', 'localhost'),
                              int(os.environ.get('MONGO_PORT', 27017))):
-            result = get_top_hashtags(query=query, limit=int(request.query_params.get('limit', 10)))
+            result = str(get_top_hashtags(query=query, limit=int(request.query_params.get('limit', 10))))
             status = 'ok'
     if aggregation_name == 'tweet_count':
         with MongoConnection('twitter', os.environ.get('MONGO_HOST', 'localhost'),
                              int(os.environ.get('MONGO_PORT', 27017))):
-            result = get_tweet_count(query=query)
+            result = str(get_tweet_count(query=query))
             status = 'ok'
     if aggregation_name == 'top_twitters':
         with MongoConnection('twitter', os.environ.get('MONGO_HOST', 'localhost'),
                              int(os.environ.get('MONGO_PORT', 27017))):
-            result = get_top_twitters(query=query, limit=int(request.query_params.get('limit', 10)))
+            result = str(get_top_twitters(query=query, limit=int(request.query_params.get('limit', 10))))
             status = 'ok'
     return UJSONResponse({'aggregation': aggregation_name, 'result': result, 'status': status})
 
 
 @APP.route("/schema", methods=["GET"], include_in_schema=False)
-def openapi_schema(request):
+def openapi_schema(request) -> Response:
     """
     Build OpenAPI schema and make it available at /schema
     :param request:

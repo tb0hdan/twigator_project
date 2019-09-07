@@ -4,7 +4,11 @@ Twitter parser database module
 """
 
 import datetime
-from mongoengine import Document, DateTimeField, StringField, ListField, LongField
+from mongoengine import (Document,  # type: ignore
+                         DateTimeField,
+                         StringField,
+                         ListField,
+                         LongField)
 
 class Tweet(Document):
     """

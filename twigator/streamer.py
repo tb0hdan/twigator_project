@@ -14,7 +14,7 @@ from queue import Queue
 
 
 # 3rd
-from twython import TwythonStreamer
+from twython import TwythonStreamer  # type: ignore
 
 sys.path.insert(1, '.')
 sys.path.insert(2, '..')

@@ -7,7 +7,7 @@ import time
 
 from typing import List, Optional
 
-from twython import Twython
+from twython import Twython  # type: ignore
 
 sys.path.insert(1, '..')
 sys.path.insert(2, '.')
