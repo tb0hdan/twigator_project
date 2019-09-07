@@ -24,7 +24,7 @@ class EnvConfig:
         self.defaults = defaults if defaults else ENV_DEFAULTS
 
     @staticmethod
-    def check_var(var):
+    def check_var(var: str) -> bool:
         """
         Confirm that requested attribute is ALL CAPITAL (plus underscore)
         :param var:

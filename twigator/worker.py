@@ -2,9 +2,10 @@
 #-*- coding: utf-8 -*-
 
 import datetime
-import os
 import sys
 import time
+
+from typing import List, Optional
 
 from twython import Twython
 
@@ -17,9 +18,9 @@ from twigator.log import logger
 from twigator.envconfig import  EnvConfig
 
 
-def get_statuses(query, tweet_count, consumer_key, consumer_secret):
+def get_statuses(in_query: str, tweet_count: int, consumer_key: str, consumer_secret: str) -> List[dict]:
     python_tweets = Twython(consumer_key, consumer_secret)
-    query = {'q': query,
+    query = {'q': in_query,
             #'result_type': 'popular',
             'count': tweet_count,
             #'lang': 'en',
@@ -27,16 +28,18 @@ def get_statuses(query, tweet_count, consumer_key, consumer_secret):
     return python_tweets.search(**query)['statuses']
 
 
-def add_to_db(statuses, query_phrases):
+def add_to_db(statuses: List[dict], query_phrases: str) -> None:
     for status in statuses:
-        tweet_id: int = status.get('id')
+        tweet_id: int = int(status.get('id', 0))
+        if not tweet_id:
+            continue
         matches = Tweet.objects(tweet_id=tweet_id)
         if matches:
             logger.warning('Existing tweet with id: %d' % tweet_id)
             continue
         # Got new tweet, save it
         format = "%a %b %d %H:%M:%S %z %Y"
-        published_at = datetime.datetime.strptime(status.get('created_at'), format)
+        published_at = datetime.datetime.strptime(str(status.get('created_at')), format)
         phrase = status.get('text')
         hashtags = [x.get('text', '') for x in status.get('entities', {}).get('hashtags', [])]
         author_id = status.get('user', {}).get('id', 0)
@@ -47,8 +50,11 @@ def add_to_db(statuses, query_phrases):
     return
 
 
-def runner(tweet_count=None, tweet_schedule=None, tweet_query=None,
-           consumer_key=None, consumer_secret=None):
+def runner(tweet_count: Optional[int] = None,
+           tweet_schedule: Optional[int] = None,
+           tweet_query: Optional[str] = None,
+           consumer_key: Optional[str] = None,
+           consumer_secret: Optional[str] = None):
     """
     Run aggregation
     :param tweet_count:
@@ -59,29 +65,29 @@ def runner(tweet_count=None, tweet_schedule=None, tweet_query=None,
     :return:
     """
     env_config = EnvConfig()
-    tweet_count: int = tweet_count if tweet_count else int(env_config.TWEET_LAST_TWEETS)
-    tweet_schedule: int = tweet_schedule if tweet_schedule else int(env_config.TWEET_EVERY_MINUTES)
-    tweet_query: str = tweet_query if tweet_query else env_config.TWEET_QUERY
-    consumer_key: str = consumer_key if consumer_key else env_config.TWITTER_CONSUMER_KEY
-    consumer_secret: str = consumer_secret if consumer_secret else env_config.TWITTER_CONSUMER_SECRET
+    tweet_count_: int = tweet_count if tweet_count else int(env_config.TWEET_LAST_TWEETS)
+    tweet_schedule_: int = tweet_schedule if tweet_schedule else int(env_config.TWEET_EVERY_MINUTES)
+    tweet_query_: str = tweet_query if tweet_query else env_config.TWEET_QUERY
+    consumer_key_: str = consumer_key if consumer_key else env_config.TWITTER_CONSUMER_KEY
+    consumer_secret_: str = consumer_secret if consumer_secret else env_config.TWITTER_CONSUMER_SECRET
 
-    if not tweet_query:
+    if not tweet_query_:
         logger.error('Cannot run with empty query...')
         sys.exit(127)
 
-    if not consumer_key or not consumer_secret:
+    if not consumer_key_ or not consumer_secret_:
         logger.error('Cannot run without auth...')
         sys.exit(129)
-    logger.info('Getting %d tweets every %d minute(s)' % (tweet_count, tweet_schedule))
+    logger.info('Getting %d tweets every %d minute(s)' % (tweet_count_, tweet_schedule_))
     while True:
         # Run!
-        statuses = get_statuses(tweet_query, tweet_count, consumer_key, consumer_secret)
+        statuses = get_statuses(tweet_query_, tweet_count_, consumer_key_, consumer_secret_)
         logger.info('Status length: %d', len(statuses))
         with MongoConnection():
-            add_to_db(statuses, tweet_query)
-        logger.info('Sleeping for %d minute(s) until next fetch...', tweet_schedule)
+            add_to_db(statuses, tweet_query_)
+        logger.info('Sleeping for %d minute(s) until next fetch...', tweet_schedule_)
         try:
-            time.sleep(tweet_schedule * 60)
+            time.sleep(tweet_schedule_ * 60)
         except KeyboardInterrupt:
             break
 

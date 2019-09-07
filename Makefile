@@ -2,7 +2,7 @@
 
 all: tests start
 
-tests: deps test-deps piprot err-check-twigator test coverage
+tests: deps test-deps piprot err-check-twigator mypy test coverage
 
 deps:
 	@pip3 install -r requirements.txt >/dev/null
@@ -45,7 +45,10 @@ err-check-twigator-debug:
 metrics: test-deps cc mi
 
 mypy: test-deps
-	@mypy -m twigator
+	@# FIXME: Add --strict after fixing issues
+	@printf "Running mypy static checks..."
+	@mypy --ignore-missing-imports -p twigator
+	@./bin/colorprint.sh green "\t\t\t[✓]\n"
 
 schema:
 	@python3 twigator/schemabuilder.py

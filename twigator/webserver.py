@@ -38,11 +38,11 @@ class ResponseBuilder:
     Starlette Response builder.
     Uses UJSONResponse underneath.
     """
-    def __init__(self):
-        self.__response = {}
+    def __init__(self) -> None:
+        self.__response: dict = {}
 
     @property
-    def response(self):
+    def response(self) -> dict:
         """
         Provide access to private __response attribute
         :return: dictionary containing response
@@ -58,7 +58,7 @@ class ResponseBuilder:
         """
         return UJSONResponse(self.response)
 
-    def set_status(self, status):
+    def set_status(self, status: str) -> None:
         """
         Set response status within JSON field
 
@@ -67,21 +67,21 @@ class ResponseBuilder:
         """
         self.__response['status'] = status
 
-    def set_ok_status(self):
+    def set_ok_status(self) -> None:
         """
         Wrapper around set_status (set to 'ok')
         :return: None
         """
         self.set_status('ok')
 
-    def set_error_status(self):
+    def set_error_status(self) -> None:
         """
         Wrapper around set_status (set to 'error')
         :return: None
         """
         self.set_status('error')
 
-    def set_result(self, result):
+    def set_result(self, result: dict) -> None:
         """
         Provide a way to set private dictionary
 

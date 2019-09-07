@@ -9,6 +9,7 @@ import threading
 import time
 import concurrent.futures
 
+from typing import List, Optional
 from queue import Queue
 
 
@@ -33,7 +34,7 @@ class MyStreamer(TwythonStreamer):
         self.track_query = ''
         self.queue = None
 
-    def on_success(self, data):
+    def on_success(self, data: dict) -> None:
         """
         Get tweet and put it into queue quickly
 
@@ -45,7 +46,7 @@ class MyStreamer(TwythonStreamer):
             return
         self.queue.put_nowait(data)
 
-    def on_error(self, status_code, data):
+    def on_error(self, status_code: int, data: dict) -> None:
         """
         Disconnect on errors, including authentication, network etc
 
@@ -67,7 +68,7 @@ class QueueReader:
         self.query = query
         self.exit = False
 
-    def add_to_db(self, data):
+    def add_to_db(self, data: dict) -> None:
         """
         Store tweet in database
 
@@ -77,7 +78,7 @@ class QueueReader:
         with MongoConnection():
             add_to_db([data], self.query)
 
-    def process_chunk(self, chunk):
+    def process_chunk(self, chunk: List[dict]) -> None:
         """
         Process group of tweets in parallel in a predictable manner
 
@@ -89,7 +90,7 @@ class QueueReader:
             for post in chunk:
                 executor.submit(self.add_to_db, post)
 
-    def set_exit(self):
+    def set_exit(self) -> None:
         """
         Request queue reader thread exit
 
@@ -97,13 +98,13 @@ class QueueReader:
         """
         self.exit = True
 
-    def run(self):
+    def run(self) -> None:
         """
         Actual queue reader runner
 
         :return:
         """
-        chunk = []
+        chunk: List[dict] = []
         while not self.exit:
             if not self.queue.empty():
                 # FIXME: Use autoscaling
@@ -117,14 +118,14 @@ class QueueReader:
                 time.sleep(0.01)
 
 
-def run_streamer(query=None):
+def run_streamer(query: Optional[str] = None) -> None:
     """
     Configure both queue and MyStreamer and run processing
 
     :param query:
     :return:
     """
-    queue = Queue()
+    queue: Queue = Queue()
     env_config = EnvConfig()
     query = query if query else env_config.TWEET_QUERY
     stream = MyStreamer(env_config.TWITTER_CONSUMER_KEY,
