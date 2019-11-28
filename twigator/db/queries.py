@@ -34,7 +34,7 @@ def get_last_tweets(phrase: Optional[str] = '',
     if date_after:
         after = datetime.datetime.strptime(date_after, DATE_FORMAT)
         query['published_at__gte'] = str(after)
-    tweets = Tweet.objects(**query).order_by('-published_at')[offset:limit]
+    tweets = Tweet.objects(**query).order_by('-published_at')[offset:offset + limit]
     for tweet in tweets:
         response.append(tweet_to_dict(tweet))
     return response
@@ -52,7 +52,7 @@ def get_author_by_id(author_id: int,
     response = []
     if offset > limit:
         offset = limit
-    tweets = Tweet.objects(author_id=author_id).order_by('-published_at')[offset:limit]
+    tweets = Tweet.objects(author_id=author_id).order_by('-published_at')[offset:offset + limit]
     for tweet in tweets:
         response.append(tweet_to_dict(tweet))
     return response
