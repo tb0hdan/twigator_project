@@ -1,8 +1,12 @@
+import sys
+sys.path.insert(1, ".")
+sys.path.insert(2, "..")
+
 import unittest
 
 from twigator.envconfig import EnvConfig
 
-from . import mytestrunner
+from tests import mytestrunner
 
 class EnvConfigTestCase(unittest.TestCase):
     '''
@@ -24,5 +28,5 @@ class EnvConfigTestCase(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    classes = [DummyTestCase]
+    classes = [EnvConfigTestCase]
     mytestrunner(classes)

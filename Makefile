@@ -13,7 +13,7 @@ endif
 
 all: tests start
 
-tests: deps test-deps piprot err-check-twigator mypy test coverage
+tests: deps test-deps piprot err-check-twigator mypy test test-sequential coverage
 
 deps:
 	@pip3 install -r requirements.txt >/dev/null
@@ -29,6 +29,9 @@ test-dirs:
 
 test: test-dirs
 	@py.test -c ./tests/etc/pytest.ini -v tests/
+
+test-sequential: test-dirs
+	@for t in $(shell ls tests|grep test_); do python3 tests/$${t}; done
 
 coverage: test-dirs
 	@py.test -c ./tests/etc/pytest.ini --cov=./twigator --cov-config=./tests/etc/coveragerc tests/

@@ -1,3 +1,7 @@
+import sys
+sys.path.insert(1, ".")
+sys.path.insert(2, "..")
+
 import unittest
 
 from mongoengine import connect, disconnect
@@ -8,7 +12,7 @@ from twigator.db.queries import (
                                  get_author_by_id
                                 )
 
-from . import mytestrunner
+from tests import mytestrunner
 
 class QueriesTestCase(unittest.TestCase):
     '''
@@ -36,5 +40,5 @@ class QueriesTestCase(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    classes = [DummyTestCase]
+    classes = [QueriesTestCase]
     mytestrunner(classes)

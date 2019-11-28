@@ -1,9 +1,14 @@
 import os
+
+import sys
+sys.path.insert(1, ".")
+sys.path.insert(2, "..")
+
 import unittest
 
 from twigator.schemabuilder import get_schema
 
-from . import mytestrunner
+from tests import mytestrunner
 
 class SchemaBuilderTestCase(unittest.TestCase):
     '''
@@ -18,5 +23,5 @@ class SchemaBuilderTestCase(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    classes = [DummyTestCase]
+    classes = [SchemaBuilderTestCase]
     mytestrunner(classes)

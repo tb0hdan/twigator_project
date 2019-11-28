@@ -1,8 +1,12 @@
+import sys
+sys.path.insert(1, ".")
+sys.path.insert(2, "..")
+
 import unittest
 
 from twigator.log import logger
 
-from . import mytestrunner
+from tests import mytestrunner
 
 class LoggerTestCase(unittest.TestCase):
     '''
@@ -18,5 +22,5 @@ class LoggerTestCase(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    classes = [DummyTestCase]
+    classes = [LoggerTestCase]
     mytestrunner(classes)

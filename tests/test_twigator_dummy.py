@@ -1,5 +1,9 @@
+import sys
+sys.path.insert(1, ".")
+sys.path.insert(2, "..")
+
 import unittest
-from . import mytestrunner
+from tests import mytestrunner
 
 class DummyTestCase(unittest.TestCase):
     '''

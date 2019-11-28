@@ -1,9 +1,13 @@
+import sys
+sys.path.insert(1, ".")
+sys.path.insert(2, "..")
+
 import unittest
 
 from twigator.db.connection import MongoConnection
 from twigator.db.entities import Tweet
 
-from . import mytestrunner
+from tests import mytestrunner
 
 class EntitiesTestCase(unittest.TestCase):
     '''
@@ -24,5 +28,5 @@ class EntitiesTestCase(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    classes = [DummyTestCase]
+    classes = [EntitiesTestCase]
     mytestrunner(classes)

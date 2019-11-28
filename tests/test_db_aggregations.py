@@ -1,10 +1,14 @@
+import sys
+sys.path.insert(1, ".")
+sys.path.insert(2, "..")
+
 import unittest
 from mongoengine import connect, disconnect
 from twigator.db.aggregations import (
                                       get_top_hashtags,
                                       get_tweet_count,
                                       get_top_twitters)
-from . import mytestrunner
+from tests import mytestrunner
 
 class AggregationsTestCase(unittest.TestCase):
     '''
@@ -26,5 +30,5 @@ class AggregationsTestCase(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    classes = [DummyTestCase]
+    classes = [AggregationsTestCase]
     mytestrunner(classes)

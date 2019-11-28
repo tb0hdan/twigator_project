@@ -7,7 +7,7 @@ import time
 
 from typing import List, Optional
 
-from twython import Twython  # type: ignore
+import twython  # type: ignore
 
 sys.path.insert(1, '..')
 sys.path.insert(2, '.')
@@ -19,7 +19,7 @@ from twigator.envconfig import  EnvConfig
 
 
 def get_statuses(in_query: str, tweet_count: int, consumer_key: str, consumer_secret: str) -> List[dict]:
-    python_tweets = Twython(consumer_key, consumer_secret)
+    python_tweets = twython.Twython(consumer_key, consumer_secret)
     query = {'q': in_query,
             #'result_type': 'popular',
             'count': tweet_count,
@@ -54,7 +54,10 @@ def runner(tweet_count: Optional[int] = None,
            tweet_schedule: Optional[int] = None,
            tweet_query: Optional[str] = None,
            consumer_key: Optional[str] = None,
-           consumer_secret: Optional[str] = None):
+           consumer_secret: Optional[str] = None,
+           database: Optional[str] = None,
+           database_host: Optional[str] = None,
+           oneshot=False):
     """
     Run aggregation
     :param tweet_count:
@@ -62,6 +65,9 @@ def runner(tweet_count: Optional[int] = None,
     :param tweet_query:
     :param consumer_key:
     :param consumer_secret:
+    :param database:
+    :param database_host:
+    :param oneshot:
     :return:
     """
     env_config = EnvConfig()
@@ -83,9 +89,11 @@ def runner(tweet_count: Optional[int] = None,
         # Run!
         statuses = get_statuses(tweet_query_, tweet_count_, consumer_key_, consumer_secret_)
         logger.info('Status length: %d', len(statuses))
-        with MongoConnection():
+        with MongoConnection(db=database, host=database_host):
             add_to_db(statuses, tweet_query_)
         logger.info('Sleeping for %d minute(s) until next fetch...', tweet_schedule_)
+        if oneshot:
+            break
         try:
             time.sleep(tweet_schedule_ * 60)
         except KeyboardInterrupt:
